@@ -1,0 +1,43 @@
+import json
+from collections import Counter
+
+# --- 1. Cargar archivo JSON ---
+with open("clientes.json", "r", encoding="utf-8") as file:
+    datos = json.load(file)
+
+# --- 2. Extraer los campos ---
+nombres = []
+correos = []
+telefonos = []
+direcciones = []
+actividad = []
+
+for cliente in datos:
+    # Limpieza básica del nombre
+    nombre_limpio = cliente.get("Customer", "").replace("?.", "").strip()
+    
+    nombres.append(nombre_limpio)
+    correos.append(cliente.get("Email"))
+    telefonos.append(cliente.get("Phones"))
+    direcciones.append(cliente.get("Address"))
+    actividad.append(cliente.get("Last Activity"))
+
+# --- 3. Función para detectar repetidos ---
+def repetidos(lista):
+    return {item: count for item, count in Counter(lista).items() if count > 1}
+
+# --- 4. Análisis de patrones ---
+patrones = {
+    "Nombres repetidos": repetidos(nombres),
+    "Correos repetidos": repetidos(correos),
+    "Teléfonos repetidos": repetidos(telefonos),
+    "Direcciones repetidas": repetidos(direcciones),
+    "Dominios de correo": Counter([c.split("@")[-1] for c in correos if c])
+}
+
+# --- 5. Mostrar reporte ---
+print("\n--- REPORTE DE PATRONES EN CLIENTES ---\n")
+for categoria, resultado in patrones.items():
+    print(f"{categoria}:")
+    print(resultado if resultado else "No se encontraron patrones.")
+    print()
