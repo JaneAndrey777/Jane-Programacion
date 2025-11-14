@@ -41,3 +41,5 @@ for categoria, resultado in patrones.items():
     print(f"{categoria}:")
     print(resultado if resultado else "No se encontraron patrones.")
     print()
+    
+    
